@@ -9,7 +9,7 @@ app.get('/user', (req, res) => {
 });
 //监听post请求
 app.post('/user',(req,res)=>{
-    res.end('请求成功！')
+    res.send('请求成功！')
 });
 // 通过 req.query 可以获取到客户端发送过来的 查询参数
 app.get('/', (req, res) => {
