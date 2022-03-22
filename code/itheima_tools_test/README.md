@@ -1,11 +1,11 @@
 ## 安装
 ```
-npm install itheima-tools
+npm install itheima_tools_test
 ```
 
 ## 导入
 ```js
-const itheima = require('itheima-tools')
+const itheima = require('itheima_tools_test')
 ```
 
 ## 格式化时间
