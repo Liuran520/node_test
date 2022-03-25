@@ -20,7 +20,7 @@ app.get('/api/jsonp', (req, res) => {
   })
 //一定要在路由之前，配置 cors 这个中间件，从而解决接口跨域的问题
 app.use(cors())
-app.use(router);
+app.use('/api',router);
 app.listen(81,function(){
     console.log("express server running at http://127.0.0.1:81");
 })
