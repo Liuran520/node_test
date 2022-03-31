@@ -5,7 +5,11 @@
 //导入数据库操作模块
 const db = require('../db/index.js');
 //导入 bcryptjs
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+//导入jsonwebtoken
+const jwt = require('jsonwebtoken');
+//导入配置文件
+const config=require('../config.js');
 //检测mysql模块能否正常工作
 // db.query('select 1', (err, result) => {
 //     if (err) return console.log(err.message);
@@ -50,5 +54,32 @@ exports.regUser = (req, res) => {
 
 }
 exports.login = (req, res) => {
-    res.send('login ok')
+    //接受表单数据
+    const userinfo = req.body;
+    //定义SQL语句
+    const sql = `select * from ev_users where username=?`
+    //执行 SQL 语句，查询用户的数据：
+    db.query(sql, userinfo.username, (err, results) => {
+        // 执行 SQL 语句失败
+        if (err) return res.cc(err);
+        // 执行 SQL 语句成功，但是查询到数据条数不等于 1
+        if (results.length !== 1) return res.cc('登录失败！');
+        // TODO：判断用户输入的登录密码是否和数据库中的密码一致
+        // 拿着用户输入的密码,和数据库中存储的密码进行对比
+        const compareResult = bcrypt.compareSync(userinfo.password, results[0].password);
+        if (!compareResult) return res.cc('登录失败!');
+        // TODO：登录成功，生成 Token 字符串
+        // 剔除完毕之后，user 中只保留了用户的 id, username, nickname, email 这四个属性的值
+        const user={...results[0],password:'',user_pic:''};
+        // 生成 Token 字符串
+        const tokenStr=jwt.sign(user,config.jwtSecretKey,{expiresIn:'10h'});
+        res.send({
+            status:0,
+            message:'登录成功！',
+            // 为了方便客户端使用 Token，在服务器端直接拼接上 Bearer 的前缀
+            token:'Bearer '+tokenStr
+        })
+
+
+    });
 }
