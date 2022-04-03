@@ -57,4 +57,14 @@ exports.updatePassword = function (req, res) {
             res.cc('更新密码成功！', 0)
         })
     })
+};
+exports.updateAvatar = function (req, res) {
+    //定义更新用户头像的 SQL 语句：
+    const sql = 'update ev_users set user_pic=? where id=?'
+    db.query(sql, [req.body.avatar, req.user.id], function (err, results) {
+        if (err) return res.cc(err);
+        if (results.affectedRows !== 1) res.cc('更新用户头像失败');
+        // 更新用户头像成功
+        return res.cc('更新头像成功！', 0)
+    })
 }
