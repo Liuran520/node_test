@@ -13,8 +13,6 @@ app.use(cors());
 //配置解析表单数据的中间件
 //配置解析 application/x-www-form-urlencoded 格式的表单数据的中间件：
 app.use(express.urlencoded({extended:false}));
-// 使用 .unless({ path: [/^\/api\//] }) 指定哪些接口不需要进行 Token 的身份认证
-app.use(expressJwt({secret:config.jwtSecretKey}).unless({path:[/^\/api\//]}));
 // 一定要在路由之前，封装 res.cc 函数
 app.use(function(req,res,next){
     res.cc=function(err,status=1){
@@ -26,7 +24,9 @@ app.use(function(req,res,next){
         })
     }
     next();
-})
+});
+// 使用 .unless({ path: [/^\/api/] }) 指定哪些接口不需要进行 Token 的身份认证
+app.use(expressJwt({secret:config.jwtSecretKey}).unless({path:[/^\/api/]}));
 //引入路由模块，并注册全局中间件
 const router=require('./router/user.js');
 app.use('/api',router);
